@@ -1,0 +1,18 @@
+<?xml version="1.0"  encoding="UTF-8"?>
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
+
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+    
+    <New id="DSDemo" class="org.eclipse.jetty.plus.jndi.Resource">
+     <Arg></Arg>
+     <Arg>jdbc/DSDemo</Arg>
+     <Arg>
+      <New class="com.mchange.v2.c3p0.ComboPooledDataSource">
+         <Set name="driverClass">com.mysql.jdbc.Driver</Set>
+         <Set name="jdbcUrl">jdbc:mysql://localhost:3306/demo_hotels?serverTimezone=UTC</Set>
+         <Set name="user">demo</Set>
+         <Set name="password">D1e2m3o4O1E3AE!3</Set>
+      </New>
+     </Arg>
+    </New>
+</Configure>
