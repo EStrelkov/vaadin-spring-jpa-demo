@@ -39,9 +39,4 @@ public class HotelCategoryEntity extends AbstractEntity {
 		this.name = name;
 	}
 
-	public static HotelCategoryEntity empty() {
-		HotelCategoryEntity hotelCategory = new HotelCategoryEntity();
-		hotelCategory.setName("No Category");
-		return hotelCategory;
-	}
 }

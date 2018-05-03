@@ -12,16 +12,23 @@ import com.gp.vaadin.vaadin_spring_jpa_demo.model.filter.HotelCategoryFilter;
 import com.gp.vaadin.vaadin_spring_jpa_demo.repository.HotelCategoryRepository;
 
 @Service
-public class HotelCategoryService {
+public class HotelCategoryService implements EntityService<HotelCategoryEntity, HotelCategoryFilter> {
 	
 	@Autowired
     private HotelCategoryRepository hotelCategoryRepository;
 	
+	@Override
+	public HotelCategoryEntity createEntity() {
+		return new HotelCategoryEntity();
+	}
+	
+	@Override
 	@Transactional(readOnly = true)
 	public HotelCategoryEntity getById(Long id) {
 		return id == null ? null : hotelCategoryRepository.findOne(id);
 	}
 	
+	@Override
 	@Transactional(readOnly = true)
 	public List<HotelCategoryEntity> findAll(HotelCategoryFilter entityFilter) {
 		if (entityFilter.isEmpty()) {
@@ -31,6 +38,7 @@ public class HotelCategoryService {
 		}
 	}
 	
+	@Override
 	@Transactional
 	public void delete(Collection<HotelCategoryEntity> entities) {
 		for (HotelCategoryEntity entity : entities) {
@@ -38,20 +46,16 @@ public class HotelCategoryService {
 		}
 	}
 	
+	@Override
 	@Transactional
 	public void delete(HotelCategoryEntity entity) {
 		hotelCategoryRepository.delete(entity);
 	}
 
+	@Override
 	@Transactional
 	public void save(HotelCategoryEntity entity) {
 		hotelCategoryRepository.save(entity);
-	}
-	
-	@Transactional(readOnly = true)
-	public String getCategoryNameById(Long id) {
-		HotelCategoryEntity hotelCategory = getById(id);
-		return hotelCategory == null ? "No Category" : hotelCategory.getName();
 	}
 
 }

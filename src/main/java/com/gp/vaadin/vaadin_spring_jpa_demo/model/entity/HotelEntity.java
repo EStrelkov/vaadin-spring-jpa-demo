@@ -2,7 +2,12 @@ package com.gp.vaadin.vaadin_spring_jpa_demo.model.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "HOTEL")
@@ -25,8 +30,10 @@ public class HotelEntity extends AbstractEntity {
 	@Column(name = "OPERATES_FROM", nullable = false)
 	private Long operatesFrom;
 
-	@Column(name = "CATEGORY")
-	private Long categoryId;
+	@ManyToOne
+    @JoinColumn(name = "CATEGORY")
+	@NotFound(action = NotFoundAction.IGNORE)
+	private HotelCategoryEntity hotelCategory;
 	
 	@Column(name = "URL", nullable = false)
 	private String url;
@@ -80,12 +87,12 @@ public class HotelEntity extends AbstractEntity {
 		this.operatesFrom = operatesFrom;
 	}
 
-	public Long getCategoryId() {
-		return categoryId;
+	public HotelCategoryEntity getHotelCategory() {
+		return hotelCategory;
 	}
 
-	public void setCategoryId(Long categoryId) {
-		this.categoryId = categoryId;
+	public void setHotelCategory(HotelCategoryEntity hotelCategory) {
+		this.hotelCategory = hotelCategory;
 	}
 
 	public String getUrl() {

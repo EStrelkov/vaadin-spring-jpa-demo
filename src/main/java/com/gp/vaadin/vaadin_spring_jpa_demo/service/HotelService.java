@@ -12,16 +12,23 @@ import com.gp.vaadin.vaadin_spring_jpa_demo.model.filter.HotelFilter;
 import com.gp.vaadin.vaadin_spring_jpa_demo.repository.HotelRepository;
 
 @Service
-public class HotelService {
+public class HotelService implements EntityService<HotelEntity, HotelFilter> {
 	
 	@Autowired
     private HotelRepository hotelRepository;
 	
+	@Override
+	public HotelEntity createEntity() {
+		return new HotelEntity();
+	}
+	
+	@Override
 	@Transactional(readOnly = true)
 	public HotelEntity getById(Long id) {
 		return id == null ? null : hotelRepository.findOne(id);
 	}
 	
+	@Override
 	@Transactional(readOnly = true)
 	public List<HotelEntity> findAll(HotelFilter entityFilter) {
 		if (entityFilter.isEmpty()) {
@@ -31,6 +38,7 @@ public class HotelService {
 		}
 	}
 	
+	@Override
 	@Transactional
 	public void delete(Collection<HotelEntity> entities) {
 		for (HotelEntity entity : entities) {
@@ -38,11 +46,13 @@ public class HotelService {
 		}
 	}
 	
+	@Override
 	@Transactional
 	public void delete(HotelEntity entity) {
 		hotelRepository.delete(entity);
 	}
 
+	@Override
 	@Transactional
 	public void save(HotelEntity entity) {
 		hotelRepository.save(entity);

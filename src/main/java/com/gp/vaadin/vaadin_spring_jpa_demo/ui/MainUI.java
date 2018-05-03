@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.ContextLoaderListener;
 
+import com.gp.vaadin.vaadin_spring_jpa_demo.ui.view.HotelCategoryView;
+import com.gp.vaadin.vaadin_spring_jpa_demo.ui.view.HotelView;
 import com.vaadin.annotations.Theme;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.Navigator;
@@ -44,7 +46,6 @@ public class MainUI extends UI {
 	@Override
     protected void init(VaadinRequest request) {
 		
-		
 		VerticalLayout layout = new VerticalLayout();
         layout.setSizeFull();
         setContent(layout);
@@ -66,8 +67,9 @@ public class MainUI extends UI {
 
         navigator.addViewChangeListener(menu);
         
-        menu.addView(HotelView.VIEW_NAME, "Hotel", VaadinIcons.BUILDING);
-        menu.addView(HotelCategoryView.VIEW_NAME, "Category", VaadinIcons.ACADEMY_CAP);
+        //TODO configure
+        menu.addView(HotelView.VIEW_NAME, HotelView.VIEW_CAPTION, VaadinIcons.BUILDING);
+        menu.addView(HotelCategoryView.VIEW_NAME, HotelCategoryView.VIEW_CAPTION, VaadinIcons.ACADEMY_CAP);
         menu.setStyleName(ValoTheme.MENUBAR_BORDERLESS);
         
         navigator.navigateTo(HotelView.VIEW_NAME);
