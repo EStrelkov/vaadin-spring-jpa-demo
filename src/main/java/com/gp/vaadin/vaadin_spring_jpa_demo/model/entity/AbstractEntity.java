@@ -10,18 +10,18 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 
 @MappedSuperclass
-public abstract class AbstractEntity implements Serializable, Cloneable {
-	
+public abstract class AbstractEntity implements Serializable {
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -992559979538093481L;
-	
+
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")
 	private Long id;
-	
+
 	@Version
 	@Column(name = "OPTLOCK")
 	private int version;
@@ -36,12 +36,14 @@ public abstract class AbstractEntity implements Serializable, Cloneable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+
+		if (!(obj instanceof AbstractEntity)) {
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		}
+
 		AbstractEntity other = (AbstractEntity) obj;
 		if (id == null) {
 			if (other.id != null)
@@ -57,10 +59,6 @@ public abstract class AbstractEntity implements Serializable, Cloneable {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-	
-	public boolean isPersisted() {
-		return id != null;
 	}
 
 }
