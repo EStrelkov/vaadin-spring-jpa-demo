@@ -1,9 +1,6 @@
 package com.gp.vaadin.vaadin_spring_jpa_demo.ui.form;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -14,10 +11,8 @@ import com.gp.vaadin.vaadin_spring_jpa_demo.model.filter.Filter;
 import com.gp.vaadin.vaadin_spring_jpa_demo.model.filter.HotelCategoryFilter;
 import com.gp.vaadin.vaadin_spring_jpa_demo.service.EntityService;
 import com.gp.vaadin.vaadin_spring_jpa_demo.ui.view.AbstractView;
+import com.gp.vaadin.vaadin_spring_jpa_demo.util.DateUtils;
 import com.gp.vaadin.vaadin_spring_jpa_demo.util.HotelCategoryUtils;
-import com.vaadin.data.ValidationResult;
-import com.vaadin.data.Validator;
-import com.vaadin.data.ValueContext;
 import com.vaadin.data.converter.StringToIntegerConverter;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.ViewScope;
@@ -61,37 +56,21 @@ public class HotelForm extends AbstractForm<HotelEntity> {
 		binder.forField(name).asRequired("Please enter a name").bind(HotelEntity::getName, HotelEntity::setName);
 		name.setDescription("Hotel name");
 
-		Validator<String> hotelAddressValidator = new Validator<String>() {
-			private static final long serialVersionUID = -4919218331954565599L;
-
-			@Override
-			public ValidationResult apply(String value, ValueContext context) {
-				if (value == null || value.isEmpty()) {
-					return ValidationResult.error("The address is empty");
-				}
-				if (value.length() < 5) {
-					return ValidationResult.error("The address is too short");
-				}
-				return ValidationResult.ok();
-			}
-		};
-		binder.forField(address).asRequired("Please enter a address").withValidator(hotelAddressValidator)
+		binder.forField(address).asRequired("Please enter a address").withValidator(new HotelAddressValidator())
 				.bind(HotelEntity::getAddress, HotelEntity::setAddress);
 		address.setDescription("Hotel address");
 
 		binder.forField(rating).asRequired("Please enter a rating")
 				.withConverter(new StringToIntegerConverter("Must be a number"))
-				.withValidator(rating -> rating >= 0 && rating <= 5, "Rating shoul be between 0 and 5")
+				.withValidator(rating -> rating >= 0 && rating <= 5, "Rating should be between 0 and 5")
 				.bind(HotelEntity::getRating, HotelEntity::setRating);
 		rating.setDescription("Hotel rating");
 
 		binder.forField(operatesFrom).asRequired("Please enter a operates from date")
 				.withValidator(date -> date.isBefore(LocalDate.now()), "Operates from date should be in past").bind(
 						hotel -> hotel.getOperatesFrom() == null ? null
-								: LocalDateTime.ofInstant(Instant.ofEpochMilli(hotel.getOperatesFrom()),
-										ZoneId.systemDefault()).toLocalDate(),
-						(hotel, localDate) -> hotel.setOperatesFrom(
-								localDate.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()));
+								: DateUtils.getLocalDate(hotel.getOperatesFrom()),
+						(hotel, localDate) -> hotel.setOperatesFrom(DateUtils.getTime(localDate)));
 		operatesFrom.setDescription("Hotel operates from date");
 
 		binder.forField(category).withNullRepresentation(HotelCategoryUtils.createEmptyHotelCategory())

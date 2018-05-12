@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:tx="http://www.springframework.org/schema/tx" xmlns:util="http://www.springframework.org/schema/util"
     xmlns:jpa="http://www.springframework.org/schema/data/jpa"
     xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd
                            http://www.springframework.org/schema/context
                            http://www.springframework.org/schema/context/spring-context-4.3.xsd
                            http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
@@ -40,4 +41,20 @@
     <bean id="persistenceExceptionTranslationPostProcessor" class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
     
     <jpa:repositories base-package="com.gp.vaadin.vaadin_spring_jpa_demo.repository" entity-manager-factory-ref="entityManagerFactory" transaction-manager-ref="transactionManager"/>
+    
+    <util:map id="hotelBulkUpdateFieldsConfig" key-type="java.lang.String" value-type="com.gp.vaadin.vaadin_spring_jpa_demo.bulk_update.BulkUpdateField">
+    	<entry key="name" value-ref="textBulkUpdateField" />
+    	<entry key="address" value-ref="addressBulkUpdateField" />
+    	<entry key="rating" value-ref="ratingBulkUpdateField" />
+    	<entry key="operatesFrom" value-ref="dateBulkUpdateField" />
+    	<entry key="hotelCategory" value-ref="hotelCategoryBulkUpdateField" />
+    	<entry key="url" value-ref="textBulkUpdateField" />
+    	<entry key="description" value-ref="textAreaBulkUpdateField" />
+    </util:map>
+    
+    <util:map id="hotelCategoryBulkUpdateFieldsConfig" key-type="java.lang.String" value-type="com.gp.vaadin.vaadin_spring_jpa_demo.bulk_update.BulkUpdateField">
+    	<entry key="name" value-ref="textBulkUpdateField" />
+    </util:map>
+    
+    
 </beans>

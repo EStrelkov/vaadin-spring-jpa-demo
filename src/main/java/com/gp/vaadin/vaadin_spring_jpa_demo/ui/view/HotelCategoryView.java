@@ -6,6 +6,7 @@ import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import com.gp.vaadin.vaadin_spring_jpa_demo.bulk_update.BulkUpdateForm;
 import com.gp.vaadin.vaadin_spring_jpa_demo.model.entity.HotelCategoryEntity;
 import com.gp.vaadin.vaadin_spring_jpa_demo.model.filter.Filter;
 import com.gp.vaadin.vaadin_spring_jpa_demo.model.filter.HotelCategoryFilter;
@@ -79,6 +80,12 @@ public class HotelCategoryView extends AbstractView<HotelCategoryEntity> {
 	@Override
 	public void setForm(@Qualifier("hotelCategoryForm") AbstractForm<HotelCategoryEntity> form) {
 		super.setForm(form);
+	}
+	
+	@Autowired
+	@Override
+	public void setBulkUpdateForm(@Qualifier("hotelCategoryBulkUpdateForm") BulkUpdateForm bulkUpdateForm) {
+		super.setBulkUpdateForm(bulkUpdateForm);
 	}
     
 }

@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
+import com.gp.vaadin.vaadin_spring_jpa_demo.bulk_update.BulkUpdateForm;
 import com.gp.vaadin.vaadin_spring_jpa_demo.model.entity.AbstractEntity;
 import com.gp.vaadin.vaadin_spring_jpa_demo.model.filter.Filter;
 import com.gp.vaadin.vaadin_spring_jpa_demo.service.EntityService;
@@ -17,6 +18,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.PopupView;
 import com.vaadin.ui.VerticalLayout;
 
 public abstract class AbstractView<Entity extends AbstractEntity> extends VerticalLayout implements View {
@@ -35,6 +37,10 @@ public abstract class AbstractView<Entity extends AbstractEntity> extends Vertic
     private Button addBtn = new Button(getAddButtonCaption());
     private Button deleteBtn = new Button(getDeleteButtonCaption());
     private Button editBtn = new Button(getEditButtonCaption());
+
+    private PopupView bulkUpdatePopup;
+    private BulkUpdateForm bulkUpdateForm;
+    private Button bulkUpdateBtn = new Button("Bulk Update");
     
     @PostConstruct
     public void init() {
@@ -49,7 +55,10 @@ public abstract class AbstractView<Entity extends AbstractEntity> extends Vertic
         for (Component filterComponent : getFilterComponents()) {
         	toolbar.addComponent(filterComponent);
         }
-        toolbar.addComponents(addBtn, deleteBtn, editBtn);
+        
+        bulkUpdatePopup = new PopupView(null, bulkUpdateForm);
+        
+        toolbar.addComponents(addBtn, deleteBtn, editBtn, bulkUpdateBtn, bulkUpdatePopup);
         
         buildGrid(grid);
 
@@ -58,6 +67,8 @@ public abstract class AbstractView<Entity extends AbstractEntity> extends Vertic
         grid.setSizeFull();
         content.setExpandRatio(grid, 1);
 
+        bulkUpdatePopup.setDescription("Bulk Update");
+        bulkUpdatePopup.setHideOnMouseOut(false);
         layout.addComponents(toolbar, content);
 
         updateList();
@@ -71,6 +82,7 @@ public abstract class AbstractView<Entity extends AbstractEntity> extends Vertic
             Set<Entity> selectedEntities = event.getAllSelectedItems();
             deleteBtn.setEnabled(selectedEntities.size() > 0);
             editBtn.setEnabled(selectedEntities.size() == 1);
+            bulkUpdateBtn.setEnabled(selectedEntities.size() > 0);
         });
 
     }
@@ -87,6 +99,7 @@ public abstract class AbstractView<Entity extends AbstractEntity> extends Vertic
         	service.delete(entitiesToDelete);
         	editBtn.setEnabled(false);
         	deleteBtn.setEnabled(false);
+        	bulkUpdateBtn.setEnabled(false);
         	updateList();
         	form.setVisible(false);
         });
@@ -96,9 +109,37 @@ public abstract class AbstractView<Entity extends AbstractEntity> extends Vertic
         	Entity entityToEdit = grid.getSelectedItems().iterator().next();
         	editBtn.setEnabled(false);
         	deleteBtn.setEnabled(false);
+        	bulkUpdateBtn.setEnabled(false);
         	grid.asMultiSelect().clear();
             form.onActivate(entityToEdit);
         });
+        
+        bulkUpdateBtn.setEnabled(false);
+        bulkUpdateBtn.addClickListener(e -> {
+        	
+        	bulkUpdatePopup.setPopupVisible(true);
+        	
+        	Set<Entity> entitiesToBulkUpdate = grid.getSelectedItems();
+        	editBtn.setEnabled(false);
+        	deleteBtn.setEnabled(false);
+        	bulkUpdateBtn.setEnabled(false);
+        	grid.asMultiSelect().clear();
+        	
+        	BulkUpdateCallback bulkUpdateCallback = new BulkUpdateCallback() {
+				
+				@Override
+				public void doBulkUpdate(String fieldName, Object value) {
+					service.bulkUpdate(entitiesToBulkUpdate, fieldName, value);
+					updateList();
+				}
+			};
+			bulkUpdateForm.onActivate(bulkUpdatePopup, bulkUpdateCallback);
+
+        });
+	}
+	
+	public static interface BulkUpdateCallback {
+		void doBulkUpdate(String fieldName, Object value);
 	}
     
     @Override
@@ -134,13 +175,17 @@ public abstract class AbstractView<Entity extends AbstractEntity> extends Vertic
     protected abstract String getAddButtonCaption();
     
     protected abstract Filter createFilter();
-
+    
     public void setService(EntityService<Entity, Filter> service) {
 		this.service = service;
 	}
     
     public void setForm(AbstractForm<Entity> form) {
 		this.form = form;
+	}
+    
+    public void setBulkUpdateForm(BulkUpdateForm bulkUpdateForm) {
+		this.bulkUpdateForm = bulkUpdateForm;
 	}
     
 }

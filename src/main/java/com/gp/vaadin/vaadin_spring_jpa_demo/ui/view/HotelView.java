@@ -9,6 +9,7 @@ import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import com.gp.vaadin.vaadin_spring_jpa_demo.bulk_update.BulkUpdateForm;
 import com.gp.vaadin.vaadin_spring_jpa_demo.model.entity.HotelEntity;
 import com.gp.vaadin.vaadin_spring_jpa_demo.model.filter.Filter;
 import com.gp.vaadin.vaadin_spring_jpa_demo.model.filter.HotelFilter;
@@ -98,4 +99,10 @@ public class HotelView extends AbstractView<HotelEntity> {
     public void setForm(@Qualifier("hotelForm") AbstractForm<HotelEntity> form) {
     	super.setForm(form);
     }
+    
+    @Autowired
+	@Override
+	public void setBulkUpdateForm(@Qualifier("hotelBulkUpdateForm") BulkUpdateForm bulkUpdateForm) {
+		super.setBulkUpdateForm(bulkUpdateForm);
+	}
 }
